@@ -16,7 +16,14 @@ type MixcloudPlaylist struct {
 }
 
 var httpClient = &http.Client{CheckRedirect: func(req *http.Request, via []*http.Request) error {
-	return errors.New("skip redirect")
+	// same path, 301 redirect to https
+	if len(via) == 1 && req.URL.Path == via[0].URL.Path {
+		log.Println("allow redirect")
+		return nil
+	} else {
+		log.Println("skip redirect")
+		return errors.New("skip redirect")
+	}
 },
 }
 
@@ -32,9 +39,9 @@ func (m *MixcloudPlaylist) verifyLogin() {
 		log.Fatal(err)
 	}
 	resp, err := httpClient.Do(req)
-	if err != nil {
-		log.Fatal(err)
-	}
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
 	if resp.StatusCode != 200 {
 		log.Fatal(resp)
 	}

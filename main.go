@@ -2,14 +2,17 @@ package main
 
 import (
 	"log"
+	"os"
 )
 
-const Host = "http://www.mixcloud.com"
+const Host = "https://www.mixcloud.com"
 
 func main() {
 
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+
 	config := new(Config)
-	config.Load("/home/nenadpet/dev/Misc/mixcloud.yml")
+	config.Load(os.Getenv("HOME") + "/dev/Misc/mixcloud.yml")
 
 	if len(config.links) == 0 {
 		log.Print("no links to process")
