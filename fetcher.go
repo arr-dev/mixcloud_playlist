@@ -72,6 +72,7 @@ func (m *MixcloudPlaylist) parsePath(link string) string {
 	req, err := http.NewRequest("GET", link, nil)
 	Debug(fmt.Sprintf("req:%+v", req))
 	if err != nil {
+		log.Println(link)
 		log.Fatal(err)
 	}
 
@@ -83,16 +84,19 @@ func (m *MixcloudPlaylist) parsePath(link string) string {
 	case 200:
 		url, err := url.Parse(link)
 		if err != nil {
+			log.Println(link)
 			log.Fatal(err)
 		}
 		path = url.Path
 	case 302:
 		url, err := resp.Location()
 		if err != nil {
+			log.Println(link)
 			log.Fatal(err)
 		}
 		path = url.Path
 	default:
+		log.Println(link)
 		log.Fatal(resp)
 	}
 	Debug(fmt.Sprintf("path:%+v", path))
@@ -106,6 +110,7 @@ func (m *MixcloudPlaylist) post(path string) {
 	body := []byte(fmt.Sprintf("action=add&playlist_slug=%s", m.config.Playlist_name))
 	req, err := http.NewRequest("POST", Host+fullPath, bytes.NewBuffer(body))
 	if err != nil {
+		log.Println(path)
 		log.Fatal(err)
 	}
 	Debug(fmt.Sprintf("req:%+v", req))
@@ -121,12 +126,16 @@ func (m *MixcloudPlaylist) post(path string) {
 
 	resp, err := httpClient.Do(req)
 	if err != nil {
+		log.Println(req)
+		log.Println(path)
 		log.Fatal(err)
 	}
 	defer resp.Body.Close()
 	Debug(fmt.Sprintf("resp:%+v", resp))
 
 	if resp.StatusCode != 200 {
+		log.Println(req)
+		log.Println(path)
 		log.Fatal(resp)
 	}
 }
