@@ -18,10 +18,10 @@ type MixcloudPlaylist struct {
 var httpClient = &http.Client{CheckRedirect: func(req *http.Request, via []*http.Request) error {
 	// same path, 301 redirect to https
 	if len(via) == 1 && req.URL.Path == via[0].URL.Path {
-		log.Println("allow redirect")
+		Debug("allow redirect")
 		return nil
 	} else {
-		log.Println("skip redirect")
+		Debug("skip redirect")
 		return errors.New("skip redirect")
 	}
 },
@@ -34,7 +34,7 @@ func NewMixcloudPlaylist(c *Config) *MixcloudPlaylist {
 func (m *MixcloudPlaylist) verifyLogin() {
 	req, err := http.NewRequest("GET", Host, nil)
 	req.Header.Add("Cookie", m.cookies())
-	log.Print(fmt.Sprintf("req:%+v", req))
+	Debug(fmt.Sprintf("req:%+v", req))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -45,7 +45,7 @@ func (m *MixcloudPlaylist) verifyLogin() {
 	if resp.StatusCode != 200 {
 		log.Fatal(resp)
 	}
-	log.Print(fmt.Sprintf("resp:%+v", resp))
+	Debug(fmt.Sprintf("resp:%+v", resp))
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
@@ -70,14 +70,14 @@ func (m *MixcloudPlaylist) parsePath(link string) string {
 	var path string
 
 	req, err := http.NewRequest("GET", link, nil)
-	log.Print(fmt.Sprintf("req:%+v", req))
+	Debug(fmt.Sprintf("req:%+v", req))
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	resp, err := httpClient.Do(req)
 	defer resp.Body.Close()
-	log.Print(fmt.Sprintf("resp:%+v", resp))
+	Debug(fmt.Sprintf("resp:%+v", resp))
 
 	switch resp.StatusCode {
 	case 200:
@@ -95,7 +95,7 @@ func (m *MixcloudPlaylist) parsePath(link string) string {
 	default:
 		log.Fatal(resp)
 	}
-	log.Print(fmt.Sprintf("path:%+v", path))
+	Debug(fmt.Sprintf("path:%+v", path))
 
 	return path
 }
@@ -108,7 +108,7 @@ func (m *MixcloudPlaylist) post(path string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Print(fmt.Sprintf("req:%+v", req))
+	Debug(fmt.Sprintf("req:%+v", req))
 
 	req.Header.Add("Cookie", m.cookies())
 	req.Header.Add("Origin", Host)
@@ -117,14 +117,14 @@ func (m *MixcloudPlaylist) post(path string) {
 	req.Header.Add("Referer", Host+path)
 	req.Header.Add("X-CSRFToken", m.config.Csrftoken)
 	req.Header.Add("X-Requested-With", "XMLHttpRequest")
-	log.Print(fmt.Sprintf("req:%+v", req))
+	Debug(fmt.Sprintf("req:%+v", req))
 
 	resp, err := httpClient.Do(req)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer resp.Body.Close()
-	log.Print(fmt.Sprintf("resp:%+v", resp))
+	Debug(fmt.Sprintf("resp:%+v", resp))
 
 	if resp.StatusCode != 200 {
 		log.Fatal(resp)

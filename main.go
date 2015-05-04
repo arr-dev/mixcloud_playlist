@@ -7,6 +7,12 @@ import (
 
 const Host = "https://www.mixcloud.com"
 
+func Debug(msg interface{}) {
+	if os.Getenv("DEBUG") != "" {
+		log.Print(msg)
+	}
+}
+
 func main() {
 
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
@@ -18,7 +24,7 @@ func main() {
 		log.Print("no links to process")
 		return
 	}
-	log.Print(config)
+	Debug(config)
 
 	mc := NewMixcloudPlaylist(config)
 	mc.verifyLogin()

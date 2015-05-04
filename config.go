@@ -24,7 +24,7 @@ func (c *Config) Load(path string) {
 	}
 
 	yaml.Unmarshal(confFile, c)
-	log.Print(c)
+	Debug(c)
 
 	c.links = readlinks(c.Links_path)
 }
