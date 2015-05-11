@@ -29,7 +29,9 @@ func main() {
 	mc := NewMixcloudPlaylist(config)
 	mc.verifyLogin()
 
+	done := make(chan bool)
 	for _, link := range config.links {
-		mc.Add(link)
+		go mc.Add(link, done)
+		<-done
 	}
 }
