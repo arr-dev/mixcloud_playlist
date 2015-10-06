@@ -32,6 +32,10 @@ func main() {
 	done := make(chan bool)
 	for _, link := range config.links {
 		go mc.Add(link, done)
+
 	}
-	<-done
+
+	for _, _ = range config.links {
+		log.Print(<-done)
+	}
 }
