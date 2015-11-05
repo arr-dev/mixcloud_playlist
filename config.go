@@ -40,7 +40,10 @@ func readlinks(path string) []string {
 	scanner := bufio.NewScanner(file)
 
 	for scanner.Scan() {
-		links = append(links, strings.TrimSpace(scanner.Text()))
+		link := strings.TrimSpace(scanner.Text())
+		if link != "" {
+			links = append(links, link)
+		}
 	}
 	return links
 }

@@ -71,6 +71,7 @@ func (m *MixcloudPlaylist) cookies() string {
 func (m *MixcloudPlaylist) parsePath(link string) string {
 	var path string
 
+	Debug(fmt.Sprintf("link:%+v", link))
 	req, err := http.NewRequest("GET", link, nil)
 	Debug(fmt.Sprintf("req:%+v", req))
 	if err != nil {
