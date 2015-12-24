@@ -57,11 +57,9 @@ func (m *MixcloudPlaylist) verifyLogin() {
 	}
 }
 
-func (m *MixcloudPlaylist) Add(link string, c chan bool) {
+func (m *MixcloudPlaylist) Add(link string) {
 	path := m.parsePath(link)
 	m.post(path)
-
-	c <- true
 }
 
 func (m *MixcloudPlaylist) cookies() string {

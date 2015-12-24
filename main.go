@@ -3,9 +3,12 @@ package main
 import (
 	"log"
 	"os"
+	"sync"
 )
 
 const Host = "https://www.mixcloud.com"
+
+var wg sync.WaitGroup
 
 func Debug(msg interface{}) {
 	if os.Getenv("DEBUG") != "" {
@@ -29,13 +32,13 @@ func main() {
 	mc := NewMixcloudPlaylist(config)
 	mc.verifyLogin()
 
-	done := make(chan bool)
 	for _, link := range config.links {
-		go mc.Add(link, done)
-
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			mc.Add(link)
+		}()
 	}
 
-	for _, _ = range config.links {
-		log.Print(<-done)
-	}
+	wg.Wait()
 }
