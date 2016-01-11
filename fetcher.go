@@ -59,7 +59,7 @@ func (m *MixcloudPlaylist) verifyLogin() {
 
 func (m *MixcloudPlaylist) Add(link string) {
 	path := m.parsePath(link)
-	m.post(path)
+	m.post(path, link)
 }
 
 func (m *MixcloudPlaylist) cookies() string {
@@ -105,12 +105,13 @@ func (m *MixcloudPlaylist) parsePath(link string) string {
 	return path
 }
 
-func (m *MixcloudPlaylist) post(path string) {
+func (m *MixcloudPlaylist) post(path, link string) {
 	fullPath := fmt.Sprintf("/playlists%sadd-to-collection/", path)
 
 	body := []byte(fmt.Sprintf("action=add&playlist_slug=%s", m.config.Playlist_name))
 	req, err := http.NewRequest("POST", Host+fullPath, bytes.NewBuffer(body))
 	if err != nil {
+		log.Println(link)
 		log.Println(path)
 		log.Fatal(err)
 	}
@@ -127,6 +128,7 @@ func (m *MixcloudPlaylist) post(path string) {
 
 	resp, err := httpClient.Do(req)
 	if err != nil {
+		log.Println(link)
 		log.Println(req)
 		log.Println(path)
 		log.Fatal(err)
@@ -135,6 +137,7 @@ func (m *MixcloudPlaylist) post(path string) {
 	Debug(fmt.Sprintf("resp:%+v", resp))
 
 	if resp.StatusCode != 200 {
+		log.Println(link)
 		log.Println(req)
 		log.Println(path)
 		log.Fatal(resp)

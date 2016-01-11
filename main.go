@@ -34,10 +34,10 @@ func main() {
 
 	for _, link := range config.links {
 		wg.Add(1)
-		go func() {
+		go func(link string) {
 			defer wg.Done()
 			mc.Add(link)
-		}()
+		}(link)
 	}
 
 	wg.Wait()
